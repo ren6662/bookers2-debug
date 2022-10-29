@@ -7,12 +7,16 @@ class BooksController < ApplicationController
     @user = @book.user
     @newbook = Book.new
     @book_comment = BookComment.new
+    @book_detail = Book.find(params[:id])
+    unless ViewCount.find_by(user_id: current_user.id, book_id: @book_detail.id)
+      current_user.view_counts.create(book_id: @book_detail.id)
+    end
   end
 
   def index
     @book = Book.new
     @books = Book.includes(:favorited_users).sort {|a,b| b.favorited_users.size <=> a.favorited_users.size}
-    
+   
   end
 
   def create
@@ -50,11 +54,11 @@ class BooksController < ApplicationController
   def book_params
     params.require(:book).permit(:title, :body, :image)
   end
-  
+
   def correct_user
     @book = Book.find(params[:id])
     @user = @book.user
     redirect_to(books_path) unless @user == current_user
   end
-  
+
 end
