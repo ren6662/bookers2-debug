@@ -12,9 +12,14 @@ Rails.application.routes.draw do
     get 'followings' => 'relationships#followings', as: 'followings'
     get 'followers' => 'relationships#followers', as: 'followers'
     get "search", to: "users#search"
+    resources :groups do
+    get "join" => "groupes#join"
+    end
   end
   get "search" => "searches#search"
-  resources :groups, except: [:destroy]
+  resources :groups do
+    get "join" => "groupes#join"
+  end
 
   resources :chats, only: [:create, :show]
 end
